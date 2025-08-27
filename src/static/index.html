@@ -5,6 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mergington High School Activities</title>
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+      }
+
+      header {
+        background-color: #4a90e2;
+        color: white;
+        padding: 1.5em 0;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.5em;
+      }
+
+      h2 {
+        margin: 0.5em 0 0;
+        font-size: 1.5em;
+        font-weight: 300;
+      }
+
+      main {
+        max-width: 800px;
+        margin: 2em auto;
+        padding: 0 1em;
+      }
+
+      section {
+        margin-bottom: 2em;
+        padding: 1.5em;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h3 {
+        margin-top: 0;
+        font-size: 1.75em;
+        border-bottom: 2px solid #4a90e2;
+        padding-bottom: 0.3em;
+      }
+
+      .form-group {
+        margin-bottom: 1.2em;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+      }
+
+      input[type="email"],
+      select {
+        width: 100%;
+        padding: 0.8em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+      }
+
+      button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 0.8em 1.2em;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      button:hover {
+        background-color: #357ab8;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1em 0;
+        background-color: #4a90e2;
+        color: white;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .activity-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        padding: 1.5em;
+        margin-bottom: 1.5em;
+        background: #fff;
+        transition: box-shadow 0.2s;
+      }
+
+      .activity-card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .participants-section {
+        margin-top: 1em;
+        background: #f8fafc;
+        border-radius: 6px;
+        padding: 0.75em 1em;
+      }
+
+      .participants-section h4 {
+        margin: 0 0 0.5em 0;
+        font-size: 1em;
+        color: #2563eb;
+        letter-spacing: 0.5px;
+      }
+
+      .participants-list {
+        margin: 0;
+        padding-left: 1.2em;
+        color: #374151;
+        font-size: 0.97em;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -26,7 +154,12 @@
         <form id="signup-form">
           <div class="form-group">
             <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="your-email@mergington.edu"
+            />
           </div>
           <div class="form-group">
             <label for="activity">Select Activity:</label>
@@ -39,6 +172,8 @@
         </form>
         <div id="message" class="hidden"></div>
       </section>
+
+      <div id="activities"></div>
     </main>
 
     <footer>
@@ -46,5 +181,42 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+      function renderActivities(activities) {
+        const container = document.getElementById("activities");
+        container.innerHTML = "";
+        Object.entries(activities).forEach(([name, info]) => {
+          const card = document.createElement("div");
+          card.className = "activity-card";
+          card.innerHTML = `
+            <h2>${name}</h2>
+            <p><strong>説明:</strong> ${info.description}</p>
+            <p><strong>スケジュール:</strong> ${info.schedule}</p>
+            <p><strong>定員:</strong> ${info.max_participants}</p>
+            <div class="participants-section">
+              <h4>参加者</h4>
+              <ul class="participants-list">
+                ${
+                  info.participants.length === 0
+                    ? "<li>まだ参加者はいません</li>"
+                    : info.participants.map((email) => `<li>${email}</li>`).join("")
+                }
+              </ul>
+            </div>
+            <form onsubmit="signup(event, '${name}')">
+              <input
+                type="email"
+                name="email"
+                placeholder="メールアドレスを入力"
+                required
+                style="margin-right: 0.5em"
+              />
+              <button type="submit">参加登録</button>
+            </form>
+          `;
+          container.appendChild(card);
+        });
+      }
+    </script>
   </body>
 </html>
